@@ -1,8 +1,15 @@
-import { Card, Col, Row } from "antd";
+import { Button, Card, Col, Row } from "antd";
 import { useEffect, useState } from "react";
 
 const FetchData = () => {
   const [data, setData] = useState<any>([]);
+  const postsPerPage = 10;
+  const numberOfPages = data.length / postsPerPage;
+  const [currentPage, setCurrentPage] = useState(1);
+  const indexOfLastProduct = currentPage * postsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - postsPerPage;
+  const paginatedData = data.slice(indexOfFirstProduct,indexOfLastProduct);
+  console.log("numberOfPages", numberOfPages, paginatedData)
   const url = "https://dummyjson.com/products";
 
   const fetchAPI = async (fetchUrl: string) => {
@@ -21,24 +28,46 @@ const FetchData = () => {
     return () => {};
   }, []);
   console.log(data);
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page); // Set the new current page
+  };
   return (
     <div style={{width : '1000px', marginLeft: '30px'}}>
       <h2>Product List</h2>
       {/* Use Ant Design Row and Col to display cards in a grid */}
       <Row gutter={[16, 16]}>
-        {data.map((dobj: any) => (
+        {paginatedData.map((dobj: any) => (
           <Col span={8} key={dobj.id}>
             <Card
               title={dobj.title}
               bordered={true}
-              cover={<img alt={dobj.title} src={dobj.images} />}
+              cover={<img alt={dobj.title} src={dobj.image} />}
             >
               <p><strong>Category:</strong> {dobj.category}</p>
               <p><strong>Description:</strong> {dobj.description}</p>
+              
             </Card>
+           
           </Col>
         ))}
+         {/* Pagination Buttons */}
+      <div style={{ marginTop: 20, textAlign: 'center' }}>
+        {/* Loop through the total pages and create buttons */}
+       
+      </div>
+      
       </Row>
+      {Array.from({ length: numberOfPages }, (_, index) => (
+          <Button
+            key={index + 1}
+            onClick={() => handlePageChange(index + 1)}
+            style={{ margin: '0 5px' }}
+            type={currentPage === index + 1 ? 'primary' : 'default'}
+          >
+            {index + 1}
+          </Button>
+        ))}
     </div>
   );
 };
