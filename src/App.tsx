@@ -3,8 +3,10 @@ import { useState } from "react";
 // import './App.css'
 // import { Button } from 'antd'
 import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import Login from "./components/Login";
+import Dashboard from "./components/dashboard/Dashboard";
 
-const Login = () => {
+const Login1 = () => {
   return (
     <Card>
       <div>hello</div>
@@ -18,8 +20,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
+        {/* <Route path="/" element={<Login />} /> */}
+        <Route path="/" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );
