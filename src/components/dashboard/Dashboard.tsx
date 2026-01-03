@@ -1,66 +1,54 @@
-import { Button, Card } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+// src/components/Dashboard.tsx
+
+import { Layout, Menu } from "antd";
+import { Link, Outlet, Route, Routes } from "react-router-dom";
+import StopWatch from "../stopWatch/StopWatch";
+import FetchData from "../fetchData/FetchData";
+
+const { Header, Content, Sider } = Layout;
 
 const Dashboard = () => {
-  const [time, setTime] = useState({
-    sec: 0,
-    min: 0,
-    hour: 0,
-  });
-  let intervalID = useRef<any>(null);
-  const [isRunning, setIsRunning] = useState(false);
- 
-const handleReset = () => {
-    // setIsRunning(false);
-    setTime((prev) => {
-        let {min,sec,hour} = prev;
-        min = sec= hour = 0;
-        return {min,sec,hour};
-
-    })
-}
- 
-  useEffect(() => {
-    if (isRunning) {
-      console.log("is Running useEffect");
-     intervalID.current = setInterval(() => {
-        setTime((prev  ) => {
-        let {sec, min, hour} = prev;
-        if(sec < 60){
-            sec += 1;
-        }
-        if(sec === 60){
-            sec = 0;
-            min+=1;
-        }
-        if(min === 60){
-            min = 0;
-            hour+=1;
-        }
- 
-        return {sec, min, hour};
-    }
-        )
-     }, 1000)
-    }
-    else return;
-
-    return () => {
-        clearInterval(intervalID.current);
-        intervalID.current = null;
-    }
-  }, [isRunning]);
-
-
-  console.log("is running", isRunning);
-  console.log("time", time.sec, time.min, time.hour);
   return (
-    <Card title="hello" style={{ width: "500px" }}>
-      {time.hour > 10 ? '' : '0'}{time.hour}: {time.min > 9 ? '' : '0'}{time.min} : {time.sec > 9 ? '' : '0'}{time.sec}
-      <Button onClick={() => setIsRunning(true)}>Play</Button>
-      <Button onClick={() => setIsRunning(false)}>Pause</Button>
-      <Button onClick={()=> handleReset()}>Reset</Button>
-    </Card>
+    <Layout style={{ minHeight: "100vh" }}>
+      <Header className="header">
+        <div className="logo" />
+        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
+          <Menu.Item key="1">
+            <Link to="/stopwatch">Stopwatch</Link>
+          </Menu.Item>
+          <Menu.Item key="2">
+            <Link to="/fetchapi">Fetch Data</Link>
+          </Menu.Item>
+        </Menu>
+      </Header>
+      <Layout>
+        <Sider width={200} className="site-layout-background">
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={['1']}
+            style={{ height: '100%', borderRight: 0 }}
+          >
+            <Menu.Item key="1">
+              <Link to="/stopwatch">Stopwatch</Link>
+            </Menu.Item>
+            <Menu.Item key="2">
+              <Link to="/fetchapi">Fetch Data</Link>
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout style={{ padding: '0 24px 24px' }}>
+          <Content
+            style={{
+              padding: 24,
+              margin: 0,
+              minHeight: 280,
+            }}
+          >
+           <Outlet />
+          </Content>
+        </Layout>
+      </Layout>
+    </Layout>
   );
 };
 
