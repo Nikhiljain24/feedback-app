@@ -1,31 +1,23 @@
-import { Card } from "antd";
-import { useState } from "react";
-// import './App.css'
-// import { Button } from 'antd'
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
-import Login from "./components/Login";
+// src/App.tsx
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import StopWatch from "./components/stopWatch/StopWatch";
+import FetchData from "./components/fetchData/FetchData";
 import Dashboard from "./components/dashboard/Dashboard";
 
-const Login1 = () => {
-  return (
-    <Card>
-      <div>hello</div>
-    </Card>
-  );
-};
-
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/" element={<Login />} /> */}
-        <Route path="/" element={<Dashboard />} />
+        {/* Dashboard route */}
+        <Route path="/" element={<Dashboard />}>
+          {/* Nested routes inside the dashboard */}
+          <Route path="stopwatch" element={<StopWatch />} />
+          <Route path="fetchapi" element={<FetchData />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
-
