@@ -4,6 +4,7 @@ import FeedbackCard from './FeedbackCard';
 import FilterBar from './FilterBar';
 import { useDispatch } from 'react-redux';
 import { setTotalFeedback } from '../../redux/slices/counterSlice';
+import { FeedbackService } from '../../services/api';
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -28,8 +29,7 @@ const FeedbackFeed: React.FC = () => {
 
     const fetchFeedbacks = async () => {
         try {
-            const response = await fetch('http://localhost:8000/feedbacks');
-            const data = await response.json();
+            const data = await FeedbackService.getFeedbacks();
             dispatch(setTotalFeedback(data.length));
             setFeedbacks(data);
         } catch (error) {
@@ -50,7 +50,7 @@ const FeedbackFeed: React.FC = () => {
 
     const handleUpvote = async (id: number) => {
         try {
-            await fetch(`http://localhost:8000/feedbacks/${id}/upvote`, { method: 'POST' });
+            await FeedbackService.upvoteFeedback(id);
             setFeedbacks(prev => prev.map(f => f.id === id ? { ...f, upvotes: f.upvotes + 1 } : f));
         } catch (error) {
             message.error('Failed to upvote');
@@ -59,12 +59,7 @@ const FeedbackFeed: React.FC = () => {
 
     const handleAddFeedback = async (values: any) => {
         try {
-            const response = await fetch('http://localhost:8000/feedbacks', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...values, upvotes: 0 }),
-            });
-            const newFeedback = await response.json();
+            const newFeedback = await FeedbackService.createFeedback(values);
             setFeedbacks([...feedbacks, newFeedback]);
             setIsModalVisible(false);
             form.resetFields();
