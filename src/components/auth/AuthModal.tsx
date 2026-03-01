@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Form, Input, Button, message, Tabs } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import { AuthService } from '../../services/api';
 
 interface AuthModalProps {
     visible: boolean;
@@ -13,32 +14,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ visible, onCancel, onLoginSuccess
 
     const handleAuth = async (values: any, type: 'login' | 'signup') => {
         try {
-            const endpoint = type === 'login' ? 'login' : 'signup';
-
-            let body;
-            let headers: any = {};
-
+            let data;
             if (type === 'login') {
-                // OAuth2PasswordRequestForm expects form-data
                 const formData = new FormData();
                 formData.append('username', values.username);
                 formData.append('password', values.password);
-                body = formData;
+                data = await AuthService.login(formData);
             } else {
-                body = JSON.stringify(values);
-                headers['Content-Type'] = 'application/json';
-            }
-
-            const response = await fetch(`http://localhost:8000/auth/${endpoint}`, {
-                method: 'POST',
-                headers,
-                body,
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.detail || 'Authentication failed');
+                data = await AuthService.signup(values);
             }
 
             if (type === 'login') {

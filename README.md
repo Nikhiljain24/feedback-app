@@ -1,73 +1,94 @@
-# React + TypeScript + Vite
+# Feedback Social Media Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, scalable feedback application designed for capturing, managing, and interacting with user feedback. Built as a monorepo containing a full-stack architecture with a React frontend and a FastAPI backend.
 
-Currently, two official plugins are available:
+## 🚀 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   **User Authentication**: Secure signup and login powered by JWT authentication (OAuth2 Password Bearer).
+*   **Feedback Management**: Users can submit feature requests, bug reports, and general enhancements.
+*   **Interactive Feed**: A responsive dashboard to browse, categorize (Feature, Bug, Enhancement), and filter feedback.
+*   **Upvoting System**: Users can upvote feedback to bubble up the most requested features.
+*   **Global State Management**: Powered by Redux Toolkit for seamless state updates and tracking.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
+*   **React** (with Vite for blazing fast build and HMR)
+*   **TypeScript** (for type safety and maintainability)
+*   **Ant Design** (for premium, responsive UI components)
+*   **Redux Toolkit** (for global state management)
 
-## Expanding the ESLint configuration
+### Backend
+*   **FastAPI** (High-performance Python web framework)
+*   **Pydantic** (Data validation and serialization)
+*   **RESTful API** structured with FastAPI's `APIRouter` pattern.
+*   In-memory data store for quick demonstration (easily extensible to PostgreSQL/MySQL via SQLAlchemy).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📂 Project Structure (Monorepo)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+FeedbackApp/
+├── fastapi-server/       # Backend service
+│   ├── app/              # Core FastAPI application
+│   │   ├── routers/      # Separated API routes (auth, feedback)
+│   │   ├── main.py       # FastAPI application entry point
+│   │   ├── schemas.py    # Pydantic models for data validation
+│   │   └── auth.py       # Authentication utilities and JWT handlers
+│   └── requirements.txt  # Python dependencies
+├── src/                  # Frontend application
+│   ├── components/       # React UI components (auth, dashboard, feedback)
+│   ├── redux/            # Redux store and slices
+│   ├── services/         # Centralized API service for frontend-backend communication
+│   ├── App.tsx           # Main React component
+│   └── main.tsx          # Application entry point
+├── package.json          # Node.js dependencies and scripts
+└── vite.config.ts        # Vite configuration
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 💻 Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+*   Node.js (v18+)
+*   Python (3.9+)
+
+### 1. Start the Backend (FastAPI)
+
+Navigate to the `fastapi-server` directory, install dependencies, and start the server.
+
+```bash
+cd fastapi-server
+# Optional: Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install fastapi uvicorn passlib[bcrypt] python-jose[cryptography] python-multipart
+
+# Start the server
+uvicorn app.main:app --reload --port 8000
 ```
+> The API will be running at `http://localhost:8000`. You can view the interactive Swagger documentation at `http://localhost:8000/docs`.
+
+### 2. Start the Frontend (React + Vite)
+
+Open a new terminal, navigate to the root directory of the project, install dependencies, and start the frontend.
+
+```bash
+# Install dependencies
+npm install
+
+# Start the Vite development server
+npm run dev
+```
+> The frontend application will be running at `http://localhost:5173`.
+
+## 📈 Future Enhancements
+
+*   **Database Integration**: Replace the in-memory store with an SQL database (e.g., PostgreSQL using SQLAlchemy).
+*   **User Profiles**: Add personalized user profiles and feedback history.
+*   **Commenting System**: Allow threaded discussions on feedback items.
+*   **Dark Mode**: Implement a global dark mode toggle.
+
+## 📄 License
+This project is licensed under the MIT License.
