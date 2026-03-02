@@ -1,32 +1,27 @@
+import axios from 'axios';
+
 const API_BASE_URL = 'http://localhost:8000';
+
+const axiosInstance = axios.create({
+    baseURL: API_BASE_URL,
+});
+
+axiosInstance.interceptors.response.use(
+    (response) => response.data,
+    (error) => {
+        const message = error.response?.data?.detail || error.message || 'An error occurred';
+        throw new Error(message);
+    }
+);
 
 export const api = {
     get: async (endpoint: string) => {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`);
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({}));
-            throw new Error(error.detail || 'Network response was not ok');
-        }
-        return response.json();
+        return axiosInstance.get(endpoint);
     },
 
     post: async (endpoint: string, body: any, isFormData: boolean = false) => {
-        const headers: Record<string, string> = {};
-        if (!isFormData) {
-            headers['Content-Type'] = 'application/json';
-        }
-
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-            method: 'POST',
-            headers,
-            body: isFormData ? body : JSON.stringify(body),
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.detail || 'Network response was not ok');
-        }
-        return data;
+        const config = isFormData ? { headers: { 'Content-Type': 'multipart/form-data' } } : {};
+        return axiosInstance.post(endpoint, body, config);
     },
 };
 

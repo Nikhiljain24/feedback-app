@@ -1,34 +1,27 @@
 import { useState } from "react";
 import { Layout, Menu, Button, Space, message } from "antd";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   BulbOutlined,
   FieldTimeOutlined,
   ApiOutlined,
   LogoutOutlined,
-  UserOutlined
 } from '@ant-design/icons';
-import AuthModal from "../auth/AuthModal";
 import { useSelector } from "react-redux";
 
 const { Header, Content, Sider } = Layout;
 
 const Dashboard = () => {
-  const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const location = useLocation();
+  const navigate = useNavigate();
   const feedbackCount = useSelector((state: any) => state.counter.totalFeedback);
-  console.log("feedback ==>", feedbackCount)
-
-  const handleLoginSuccess = (token: string) => {
-    localStorage.setItem('token', token);
-    setIsLoggedIn(true);
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
     message.info('Logged out');
+    navigate('/login');
   };
 
   const menuItems = [
@@ -102,19 +95,11 @@ const Dashboard = () => {
           width: '100%'
         }}>
           <Space>
-            {isLoggedIn ? (
+            {isLoggedIn && (
               <Button icon={<LogoutOutlined />} onClick={handleLogout}>Logout</Button>
-            ) : (
-              <Button type="primary" icon={<UserOutlined />} onClick={() => setIsAuthModalVisible(true)}>Login</Button>
             )}
           </Space>
         </Header>
-
-        <AuthModal
-          visible={isAuthModalVisible}
-          onCancel={() => setIsAuthModalVisible(false)}
-          onLoginSuccess={handleLoginSuccess}
-        />
 
         <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280, borderRadius: 8 }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
