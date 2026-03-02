@@ -90,5 +90,11 @@ npm run dev
 *   **Commenting System**: Allow threaded discussions on feedback items.
 *   **Dark Mode**: Implement a global dark mode toggle.
 
+## 🚀 Future Roadmap
+
+*   **Guest Mode**: Allow unauthenticated users to view the feed with 'read-only' permissions.
+*   **AI Integration**: Add a 'Refine with AI' button using a small LLM (like Phi or Ollama) to polish feedback descriptions.
+*   **Database Migration**: Move from in-memory storage to a persistent PostgreSQL database.
+
 ## 📄 License
 This project is licensed under the MIT License.

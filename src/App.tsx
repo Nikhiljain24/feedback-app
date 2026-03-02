@@ -1,17 +1,28 @@
 // src/App.tsx
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import StopWatch from "./components/stopWatch/StopWatch";
 import FetchData from "./components/fetchData/FetchData";
 import Dashboard from "./components/dashboard/Dashboard";
 import FeedbackFeed from "./components/feedback/FeedbackFeed";
+import LoginPage from "./components/auth/LoginPage";
+
+const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Dashboard route */}
-        <Route path="/" element={<Dashboard />}>
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* Protected Dashboard route */}
+        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}>
           {/* Nested routes inside the dashboard */}
           <Route index element={<FeedbackFeed />} />
           <Route path="stopwatch" element={<StopWatch />} />

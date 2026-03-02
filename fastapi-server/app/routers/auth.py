@@ -10,7 +10,15 @@ router = APIRouter(
 )
 
 # In-memory database for users
-users = []
+users = [
+    {
+        "id": 1,
+        "username": "admin",
+        "email": "admin@example.com",
+        "hashed_password": get_password_hash("admin"),
+        "is_active": True
+    }
+]
 
 @router.post("/signup", response_model=User)
 async def signup(user: UserCreate):

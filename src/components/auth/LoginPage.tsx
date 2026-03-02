@@ -1,16 +1,12 @@
 import React from 'react';
-import { Modal, Form, Input, Button, message, Tabs } from 'antd';
+import { Form, Input, Button, message, Tabs, Row, Col, Card } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { AuthService } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
 
-interface AuthModalProps {
-    visible: boolean;
-    onCancel: () => void;
-    onLoginSuccess: (token: string) => void;
-}
-
-const AuthModal: React.FC<AuthModalProps> = ({ visible, onCancel, onLoginSuccess }) => {
+const LoginPage: React.FC = () => {
     const [form] = Form.useForm();
+    const navigate = useNavigate();
 
     const handleAuth = async (values: any, type: 'login' | 'signup') => {
         try {
@@ -20,20 +16,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ visible, onCancel, onLoginSuccess
                 formData.append('username', values.username);
                 formData.append('password', values.password);
                 data = await AuthService.login(formData);
+                localStorage.setItem('token', data.access_token);
+                message.success('Login successful!');
+                navigate('/');
             } else {
-                data = await AuthService.signup(values);
-            }
-
-            if (type === 'login') {
-                onLoginSuccess(data.access_token);
-                message.success('Welcome back!');
-                onCancel();
-            } else {
+                await AuthService.signup(values);
                 message.success('Registration successful! Please login.');
                 form.resetFields();
             }
         } catch (error: any) {
-            message.error(error.message);
+            message.error(error.message || 'Authentication failed');
         }
     };
 
@@ -43,10 +35,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ visible, onCancel, onLoginSuccess
             label: 'Login',
             children: (
                 <Form layout="vertical" onFinish={(values) => handleAuth(values, 'login')}>
-                    <Form.Item name="username" rules={[{ required: true }]}>
+                    <Form.Item name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
                         <Input prefix={<UserOutlined />} placeholder="Username" />
                     </Form.Item>
-                    <Form.Item name="password" rules={[{ required: true }]}>
+                    <Form.Item name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
                         <Input.Password prefix={<LockOutlined />} placeholder="Password" />
                     </Form.Item>
                     <Form.Item>
@@ -60,13 +52,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ visible, onCancel, onLoginSuccess
             label: 'Sign Up',
             children: (
                 <Form form={form} layout="vertical" onFinish={(values) => handleAuth(values, 'signup')}>
-                    <Form.Item name="username" rules={[{ required: true }]}>
+                    <Form.Item name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
                         <Input prefix={<UserOutlined />} placeholder="Username" />
                     </Form.Item>
-                    <Form.Item name="email" rules={[{ type: 'email' }]}>
+                    <Form.Item name="email" rules={[{ type: 'email', message: 'Please input a valid email!' }]}>
                         <Input prefix={<MailOutlined />} placeholder="Email (Optional)" />
                     </Form.Item>
-                    <Form.Item name="password" rules={[{ required: true, min: 6 }]}>
+                    <Form.Item name="password" rules={[{ required: true, min: 6, message: 'Password must be at least 6 characters!' }]}>
                         <Input.Password prefix={<LockOutlined />} placeholder="Password" />
                     </Form.Item>
                     <Form.Item>
@@ -78,16 +70,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ visible, onCancel, onLoginSuccess
     ];
 
     return (
-        <Modal
-            title="Join FeedbackApp"
-            open={visible}
-            onCancel={onCancel}
-            footer={null}
-            destroyOnClose
-        >
-            <Tabs defaultActiveKey="login" items={items} />
-        </Modal>
+        <Row justify="center" align="middle" style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
+            <Col xs={24} sm={16} md={12} lg={8} xl={6} xxl={4}>
+                <Card
+                    title={<div style={{ textAlign: 'center', fontSize: '24px' }}>Welcome</div>}
+                    bordered={false}
+                    style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.1)', borderRadius: '12px' }}
+                >
+                    <Tabs defaultActiveKey="login" items={items} centered />
+                </Card>
+            </Col>
+        </Row>
     );
 };
 
-export default AuthModal;
+export default LoginPage;
