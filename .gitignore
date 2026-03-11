@@ -32,3 +32,4 @@ venv/
 .pytest_cache/
 test_auth.py
 test_output.txt
+feedback.db
