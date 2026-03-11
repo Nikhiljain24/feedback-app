@@ -69,17 +69,17 @@ class TagResponse(TagBase):
 class FeedbackBase(BaseModel):
     title: str
     content: str
-    category_id: int
-    status_id: int
+    category_id: Optional[int] = None
+    status_id: Optional[int] = None
 
 class FeedbackCreate(FeedbackBase):
-    pass
+    category: Optional[str] = None
 
 class FeedbackResponse(FeedbackBase):
     id: int
     user_id: int
     created_at: datetime
-    # Optionally we could include nested schemas here, e.g., author: UserResponse
+    category: Optional[CategoryResponse] = None
     
     class Config:
         from_attributes = True

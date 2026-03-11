@@ -1,5 +1,6 @@
 import React from 'react';
 import { Segmented } from 'antd';
+import styles from './FilterBar.module.scss';
 
 interface FilterBarProps {
     categories: string[];
@@ -9,7 +10,7 @@ interface FilterBarProps {
 
 const FilterBar: React.FC<FilterBarProps> = ({ categories, selectedCategory, onSelectCategory }) => {
     return (
-        <div style={{ marginBottom: 24, textAlign: 'center' }}>
+        <div className={styles.container}>
             <Segmented
                 options={categories}
                 value={selectedCategory}

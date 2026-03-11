@@ -5,6 +5,7 @@ import FilterBar from './FilterBar';
 import { useDispatch } from 'react-redux';
 import { setTotalFeedback } from '../../redux/slices/counterSlice';
 import { FeedbackService } from '../../services/api';
+import styles from './FeedbackFeed.module.scss';
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -13,7 +14,7 @@ interface Feedback {
     id: number;
     title: string;
     content: string;
-    category: string;
+    category: string | { name: string }; // Handle both string and object
     upvotes: number;
 }
 
@@ -71,12 +72,15 @@ const FeedbackFeed: React.FC = () => {
 
     const filteredFeedbacks = selectedCategory === 'All'
         ? feedbacks
-        : feedbacks.filter(f => f.category === selectedCategory);
+        : feedbacks.filter(f => {
+            const categoryName = typeof f.category === 'string' ? f.category : f.category?.name;
+            return categoryName === selectedCategory;
+        });
 
     return (
-        <Content style={{ padding: '24px', maxWidth: 800, margin: '0 auto', width: '100%' }}>
-            <Space direction="vertical" size="large" style={{ width: '100%' }}>
-                <Space align="center" style={{ justifyContent: 'space-between', width: '100%' }}>
+        <Content className={styles.content}>
+            <Space direction="vertical" size="large" className={styles.feedSpace}>
+                <Space align="center" className={styles.headerSpace}>
                     <Title level={2}>Feedback Feed</Title>
                     <Button type="primary" onClick={() => setIsModalVisible(true)}>
                         Add Feedback
@@ -90,7 +94,7 @@ const FeedbackFeed: React.FC = () => {
                 />
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '50px' }}><Spin size="large" /></div>
+                    <div className={styles.spinnerContainer}><Spin size="large" /></div>
                 ) : filteredFeedbacks.length > 0 ? (
                     filteredFeedbacks.map(f => (
                         <FeedbackCard key={f.id} feedback={f} onUpvote={handleUpvote} />
