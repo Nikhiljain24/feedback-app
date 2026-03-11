@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import feedback, auth
+from .routers import feedback, auth, categories
+from .database import engine
+from . import models
+
+# Create all tables in the database
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Feedback Social Media API")
 
@@ -19,6 +24,7 @@ app.add_middleware(
 # Include routers
 app.include_router(feedback.router)
 app.include_router(auth.router)
+app.include_router(categories.router)
 
 @app.get("/")
 async def root():
