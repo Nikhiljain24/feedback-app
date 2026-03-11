@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Badge, Button, Space, Typography } from 'antd';
 import { LikeOutlined } from '@ant-design/icons';
+import styles from './FeedbackCard.module.scss';
 
 const { Title, Paragraph } = Typography;
 
@@ -9,14 +10,22 @@ interface FeedbackCardProps {
         id: number;
         title: string;
         content: string;
-        category: string;
+        category: any;
         upvotes: number;
     };
     onUpvote: (id: number) => void;
 }
 
 const FeedbackCard: React.FC<FeedbackCardProps> = ({ feedback, onUpvote }) => {
+    console.log("feedback ==>", feedback);
+
+    // Safely get category name, handling missing category or object-based category
+    const categoryName = typeof feedback.category === 'string'
+        ? feedback.category
+        : (feedback.category as any)?.name || 'Uncategorized';
+
     const getBadgeColor = (category: string) => {
+        if (!category) return '#faad14';
         switch (category.toLowerCase()) {
             case 'feature':
                 return '#1890ff';
@@ -32,49 +41,33 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ feedback, onUpvote }) => {
     return (
         <Card
             hoverable
-            style={{
-                marginBottom: 20,
-                borderRadius: '12px',
-                overflow: 'hidden',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                border: '1px solid #f0f0f0'
-            }}
-            bodyStyle={{ padding: '24px' }}
+            className={styles.card}
             actions={[
                 <Button
                     type="text"
                     icon={<LikeOutlined />}
                     onClick={() => onUpvote(feedback.id)}
-                    style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}
+                    className={styles.upvoteButton}
                 >
-                    <span style={{ fontWeight: 600, marginLeft: 4 }}>{feedback.upvotes}</span>
-                    <span style={{ marginLeft: 4 }}>Upvotes</span>
+                    <span className={styles.upvoteCount}>{feedback.upvotes}</span>
+                    <span className={styles.upvoteLabel}>Upvotes</span>
                 </Button>
             ]}
         >
             <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
-                    <Title level={4} style={{ margin: 0, lineHeight: '1.4', flex: 1 }}>
+                <div className={styles.cardHeader}>
+                    <Title level={4} className={styles.title}>
                         {feedback.title}
                     </Title>
                     <Badge
-                        count={`#${feedback.category}`}
+                        count={`#${categoryName}`}
+                        className={styles.badge}
                         style={{
-                            backgroundColor: getBadgeColor(feedback.category),
-                            borderRadius: '4px',
-                            fontWeight: 500
+                            backgroundColor: getBadgeColor(categoryName),
                         }}
                     />
                 </div>
-                <Paragraph
-                    style={{
-                        color: '#595959',
-                        fontSize: '15px',
-                        lineHeight: '1.6',
-                        margin: 0,
-                        whiteSpace: 'pre-wrap'
-                    }}
-                >
+                <Paragraph className={styles.content}>
                     {feedback.content}
                 </Paragraph>
             </Space>

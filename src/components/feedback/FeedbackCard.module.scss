@@ -1,0 +1,54 @@
+.card {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+
+    :global(.ant-card-body) {
+        padding: 24px;
+    }
+}
+
+.upvoteButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    .upvoteCount {
+        font-weight: 600;
+        margin-left: 4px;
+    }
+
+    .upvoteLabel {
+        margin-left: 4px;
+    }
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+
+    .title {
+        margin: 0 !important;
+        line-height: 1.4 !important;
+        flex: 1;
+    }
+}
+
+.badge {
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.content {
+    color: #595959;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0;
+    white-space: pre-wrap;
+}
